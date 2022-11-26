@@ -6,6 +6,7 @@ import {
 } from "@react-three/drei";
 import { Track } from "./Track";
 import { Ground } from "./Ground";
+import { Car } from "./Car";
 
 export function Scene() {
   return (
@@ -17,6 +18,7 @@ export function Scene() {
 
       <Track />
       <Ground />
+      <Car />
     </Suspense>
   );
 }
