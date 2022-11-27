@@ -10,6 +10,7 @@ import { useBox, useRaycastVehicle } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
 import { useRef } from "react";
 import { Mesh, BufferGeometry, Material, Group } from "three";
+import { useControls } from "./useControls";
 import { useWheels } from "./useWheels";
 import { WheelDebug } from "./WheelDebug";
 
@@ -46,6 +47,8 @@ export function Car() {
     }),
     useRef(null)
   );
+
+  useControls(vehicleApi, chassisApi);
 
   return (
     <group ref={vehicle} name="vehicle">
