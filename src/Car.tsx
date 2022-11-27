@@ -6,181 +6,227 @@ source: https://sketchfab.com/3d-models/low-poly-car-muscle-car-2-ac23acdb0bd54a
 title: Low Poly Car Muscle Car 2
 */
 
+import { useBox, useRaycastVehicle } from "@react-three/cannon";
 import { useGLTF } from "@react-three/drei";
+import { useRef } from "react";
+import { Mesh, BufferGeometry, Material, Group } from "three";
+import { useWheels } from "./useWheels";
+import { WheelDebug } from "./WheelDebug";
 
 export function Car() {
   const { nodes: nodesOriginal, materials } = useGLTF("/models/car.glb");
   const nodes = nodesOriginal as any;
 
+  // Physics
+  const position: [number, number, number] = [-1.5, 0.5, 3];
+  const width = 0.15;
+  const height = 0.07;
+  const front = 0.15;
+  const wheelRadius = 0.05;
+
+  const chassisBodyArgs: [number, number, number] = [width, height, front * 2];
+  const [chassisBody, chassisApi] = useBox<
+    Mesh<BufferGeometry, Material | Material[]>
+  >(
+    () => ({
+      args: chassisBodyArgs,
+      mass: 150,
+      position,
+    }),
+    useRef(null)
+  );
+
+  const [wheels, wheelInfos] = useWheels(width, height, front, wheelRadius);
+
+  const [vehicle, vehicleApi] = useRaycastVehicle<Group>(
+    () => ({
+      chassisBody,
+      wheelInfos,
+      wheels,
+    }),
+    useRef(null)
+  );
+
   return (
-    <group dispose={null} scale={[0.0012, 0.0012, 0.0012]} rotation-y={Math.PI}>
-      <group rotation={[-Math.PI / 2, 0, 0]} position={[-365, -18, -67]}>
-        <group rotation={[Math.PI / 2, 0, 0]}>
-          <group
-            position={[420.19, 23.97, -24.08]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBkL_Tire003_0"].geometry}
-              material={materials["Tire.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelBkL_Rim003_0"].geometry}
-              material={materials["Rim.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelBkL_Disk001_0"].geometry}
-              material={materials["Disk.001"]}
-            />
-          </group>
-          <group
-            position={[309.78, 23.97, -24.08]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBkR_Tire003_0"].geometry}
-              material={materials["Tire.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelBkR_Rim003_0"].geometry}
-              material={materials["Rim.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelBkR_Disk001_0"].geometry}
-              material={materials["Disk.001"]}
-            />
-          </group>
-          <group
-            position={[418.46, 22.58, 156.61]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelFtL_Tire003_0"].geometry}
-              material={materials["Tire.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelFtL_Rim003_0"].geometry}
-              material={materials["Rim.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelFtL_Disk001_0"].geometry}
-              material={materials["Disk.001"]}
-            />
-          </group>
-          <group
-            position={[311.51, 22.58, 156.61]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelFtR_Tire003_0"].geometry}
-              material={materials["Tire.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelFtR_Rim003_0"].geometry}
-              material={materials["Rim.003"]}
-            />
-            <mesh
-              geometry={nodes["5WheelFtR_Disk001_0"].geometry}
-              material={materials["Disk.001"]}
-            />
-          </group>
-          <group
-            position={[413.97, 23.98, -14.74]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBrakeBkL_Material005_0"].geometry}
-              material={materials["Material.005"]}
-            />
-          </group>
-          <group
-            position={[316, 23.98, -14.74]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBrakeBkR_Material005_0"].geometry}
-              material={materials["Material.005"]}
-            />
-          </group>
-          <group
-            position={[413.02, 22.57, 148.23]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBrakeFtL_Material005_0"].geometry}
-              material={materials["Material.005"]}
-            />
-          </group>
-          <group
-            position={[316.95, 22.57, 148.23]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes["5WheelBrakeFtR_Material005_0"].geometry}
-              material={materials["Material.005"]}
-            />
-          </group>
-          <group
-            position={[364.99, 8.35, 59.61]}
-            rotation={[-1.57, 0, 0]}
-            scale={23.35}
-          >
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Carbon_parts_0.geometry}
-              material={materials.Carbon_parts}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Body005_0.geometry}
-              material={materials["Body.005"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Glass006_0.geometry}
-              material={materials["Glass.006"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Mirror002_0.geometry}
-              material={materials["Mirror.002"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Grille004_0.geometry}
-              material={materials["Grille.004"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Tail_light004_0.geometry}
-              material={materials["Tail_light.004"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Lamp_glass003_0.geometry}
-              material={materials["Lamp_glass.003"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Exhaust003_0.geometry}
-              material={materials["Exhaust.003"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Material006_0.geometry}
-              material={materials["Material.006"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Head_light005_0.geometry}
-              material={materials["Head_light.005"]}
-            />
-            <mesh
-              geometry={nodes.Muscle_car_2Body_Blingker_0.geometry}
-              material={materials.Blingker}
-            />
-          </group>
-        </group>
-      </group>
+    <group ref={vehicle} name="vehicle">
+      <mesh ref={chassisBody}>
+        <meshBasicMaterial transparent opacity={0.3} />
+        <boxGeometry args={chassisBodyArgs} />
+      </mesh>
+
+      <WheelDebug wheelRef={wheels[0]} radius={wheelRadius} />
+      <WheelDebug wheelRef={wheels[1]} radius={wheelRadius} />
+      <WheelDebug wheelRef={wheels[2]} radius={wheelRadius} />
+      <WheelDebug wheelRef={wheels[3]} radius={wheelRadius} />
     </group>
+    // <group dispose={null} scale={[0.0012, 0.0012, 0.0012]} rotation-y={Math.PI}>
+    //   <group rotation={[-Math.PI / 2, 0, 0]} position={[-365, -18, -67]}>
+    //     <group rotation={[Math.PI / 2, 0, 0]}>
+    //       <group
+    //         position={[420.19, 23.97, -24.08]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBkL_Tire003_0"].geometry}
+    //           material={materials["Tire.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelBkL_Rim003_0"].geometry}
+    //           material={materials["Rim.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelBkL_Disk001_0"].geometry}
+    //           material={materials["Disk.001"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[309.78, 23.97, -24.08]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBkR_Tire003_0"].geometry}
+    //           material={materials["Tire.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelBkR_Rim003_0"].geometry}
+    //           material={materials["Rim.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelBkR_Disk001_0"].geometry}
+    //           material={materials["Disk.001"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[418.46, 22.58, 156.61]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelFtL_Tire003_0"].geometry}
+    //           material={materials["Tire.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelFtL_Rim003_0"].geometry}
+    //           material={materials["Rim.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelFtL_Disk001_0"].geometry}
+    //           material={materials["Disk.001"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[311.51, 22.58, 156.61]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelFtR_Tire003_0"].geometry}
+    //           material={materials["Tire.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelFtR_Rim003_0"].geometry}
+    //           material={materials["Rim.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes["5WheelFtR_Disk001_0"].geometry}
+    //           material={materials["Disk.001"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[413.97, 23.98, -14.74]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBrakeBkL_Material005_0"].geometry}
+    //           material={materials["Material.005"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[316, 23.98, -14.74]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBrakeBkR_Material005_0"].geometry}
+    //           material={materials["Material.005"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[413.02, 22.57, 148.23]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBrakeFtL_Material005_0"].geometry}
+    //           material={materials["Material.005"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[316.95, 22.57, 148.23]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes["5WheelBrakeFtR_Material005_0"].geometry}
+    //           material={materials["Material.005"]}
+    //         />
+    //       </group>
+    //       <group
+    //         position={[364.99, 8.35, 59.61]}
+    //         rotation={[-1.57, 0, 0]}
+    //         scale={23.35}
+    //       >
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Carbon_parts_0.geometry}
+    //           material={materials.Carbon_parts}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Body005_0.geometry}
+    //           material={materials["Body.005"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Glass006_0.geometry}
+    //           material={materials["Glass.006"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Mirror002_0.geometry}
+    //           material={materials["Mirror.002"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Grille004_0.geometry}
+    //           material={materials["Grille.004"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Tail_light004_0.geometry}
+    //           material={materials["Tail_light.004"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Lamp_glass003_0.geometry}
+    //           material={materials["Lamp_glass.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Exhaust003_0.geometry}
+    //           material={materials["Exhaust.003"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Material006_0.geometry}
+    //           material={materials["Material.006"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Head_light005_0.geometry}
+    //           material={materials["Head_light.005"]}
+    //         />
+    //         <mesh
+    //           geometry={nodes.Muscle_car_2Body_Blingker_0.geometry}
+    //           material={materials.Blingker}
+    //         />
+    //       </group>
+    //     </group>
+    //   </group>
+    // </group>
   );
 }
 

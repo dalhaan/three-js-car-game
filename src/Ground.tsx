@@ -1,3 +1,4 @@
+import { usePlane } from "@react-three/cannon";
 import { MeshReflectorMaterial } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
@@ -31,6 +32,15 @@ export function Ground() {
       meshRef.current.geometry.setAttribute("uv2", new BufferAttribute(uvs, 2));
     }
   }, []);
+
+  // Physics
+  usePlane(
+    () => ({
+      type: "Static",
+      rotation: [-Math.PI / 2, 0, 0],
+    }),
+    meshRef
+  );
 
   return (
     <group>
