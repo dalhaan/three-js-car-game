@@ -16,8 +16,7 @@ export function Track() {
 
   return (
     <group>
-      <mesh>
-        <primitive object={geometry} attach="geometry" />
+      <mesh geometry={geometry}>
         <meshBasicMaterial toneMapped={false} map={colourMap} />
       </mesh>
 
